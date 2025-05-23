@@ -12,12 +12,12 @@ import torch.nn
 import torchvision.transforms as transforms
 import torchvision.transforms.functional as TF
 from tqdm import tqdm
+from natsort import natsorted
 
 sys.path.append('core')
 from raft import RAFT
 from utils import flow_viz
 from utils.utils import InputPadder
-from natsort import natsorted
 from utils1.utils import get_network, str2bool, to_cuda
 from sklearn.metrics import accuracy_score, average_precision_score, roc_auc_score,roc_auc_score
 
