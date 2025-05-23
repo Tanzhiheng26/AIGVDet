@@ -8,6 +8,7 @@ optical_dir = "optical_result/1_fake/"
 mop_path = "checkpoints/optical.pth"
 mor_path = "checkpoints/original.pth"
 threshold = "0.1"
+n_frames = "100"
 
 # Ensure directories exist
 assert os.path.isdir(test_dir), f"Directory not found: {test_dir}"
@@ -30,6 +31,7 @@ for mp4_file in mp4_files:
         "-mop", mop_path,
         "-mor", mor_path,
         "-t", threshold,
+        "--n_frames", n_frames,
     ]
 
     print("Running:", " ".join(command))

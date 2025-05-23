@@ -1,3 +1,4 @@
+import random
 import sys
 import argparse
 import os
@@ -51,21 +52,30 @@ def viz(img, flo, folder_optical_flow_path, imfile1):
     cv2.imwrite(folder_optical_flow_path, flo)
 
 
-def video_to_frames(video_path, output_folder):
+def video_to_frames(video_path, output_folder, n_frames):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     
     cap = cv2.VideoCapture(video_path)
-    frame_count = 0
-    
+    frame_idx = 0
+
+    # Sample n_frames consecutive frames from start_index
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    max_start = max(0, total_frames - n_frames)
+    start_index = random.randint(0, max_start)
+    if n_frames > 0:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, start_index)
+        frame_idx = start_index
+
     while cap.isOpened():
         ret, frame = cap.read()
-        if not ret:
+        if not ret or (n_frames > 0 and frame_idx >= start_index + n_frames):
             break
         
-        frame_filename = os.path.join(output_folder, f"frame_{frame_count:05d}.png")
+        frame_filename = os.path.join(output_folder, f"frame_{frame_idx:05d}.png")
         cv2.imwrite(frame_filename, frame)
-        frame_count += 1
+
+        frame_idx += 1
     
     cap.release()
 
@@ -91,7 +101,7 @@ def OF_gen(args):
 
     with torch.no_grad():
 
-        images = video_to_frames(args.path, args.folder_original_path)
+        images = video_to_frames(args.path, args.folder_original_path, args.n_frames)
         images = natsorted(images)
 
         for imfile1, imfile2 in zip(images[:-1], images[1:]):
@@ -132,6 +142,11 @@ if __name__ == '__main__':
         "--threshold",
         type=float,
         default=0.5,
+    )
+    parser.add_argument(
+        "--n_frames",
+        type=int,
+        default=0, # Use all frames
     )
     parser.add_argument("--use_cpu", action="store_true", help="uses gpu by default, turn on to use cpu")
     parser.add_argument("--arch", type=str, default="resnet50")
@@ -193,7 +208,6 @@ if __name__ == '__main__':
             original_prob_sum+=prob
                             
             # print(f"original_path: {img_path}, original_pro: {prob}" )
-                        
                         
     original_predict=original_prob_sum/len(original_file_list)
     print("original prob",original_predict)
