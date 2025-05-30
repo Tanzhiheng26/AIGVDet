@@ -148,6 +148,15 @@ if __name__ == '__main__':
         type=int,
         default=0, # Use all frames
     )
+    parser.add_argument(
+        "--flag",
+        type=int,
+        default=-1 # unknown
+    )
+    parser.add_argument(
+        "--csv_path",
+        type=str,
+    )
     parser.add_argument("--use_cpu", action="store_true", help="uses gpu by default, turn on to use cpu")
     parser.add_argument("--arch", type=str, default="resnet50")
     parser.add_argument("--aug_norm", type=str2bool, default=True)
@@ -239,3 +248,19 @@ if __name__ == '__main__':
         print("Real video")
     else:
         print("Fake video")
+
+    if args.csv_path:
+        new_row = pd.DataFrame([{
+            'name': original_subsubfolder_path.split('/')[-1],
+            'pro': predict,
+            'flag': args.flag,
+            'optical_pro': optical_predict,
+            'original_pro': original_predict
+        }])
+
+        new_row.to_csv(
+            args.csv_path,
+            mode='a',
+            index=False,
+            header=not os.path.exists(args.csv_path)
+        )
