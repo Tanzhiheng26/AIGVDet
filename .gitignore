@@ -1,7 +1,6 @@
 data/
 frame/
 optical_result/
-results/
 __pycache__/
 checkpoints/
 raft_model/
