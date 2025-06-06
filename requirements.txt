@@ -3,6 +3,7 @@
 einops
 imageio
 ipympl
+ipykernel
 matplotlib
 numpy<2
 opencv-python
