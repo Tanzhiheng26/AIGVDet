@@ -2,13 +2,15 @@ import os
 import subprocess
 
 # Base paths
-test_dir = "data/test/sora_mp4/" # Directory contains videos
+test_dir = "data/test/1_fake/veo3_mp4/" # Directory contains videos
 frame_dir = "frame/1_fake/"
 optical_dir = "optical_result/1_fake/"
 mop_path = "checkpoints/optical.pth"
 mor_path = "checkpoints/original.pth"
 threshold = "0.1"
-n_frames = "100"
+# n_frames = "100"
+csv_path = "results/veo3.csv"
+flag = "1"
 
 # Ensure directories exist
 assert os.path.isdir(test_dir), f"Directory not found: {test_dir}"
@@ -31,7 +33,9 @@ for mp4_file in mp4_files:
         "-mop", mop_path,
         "-mor", mor_path,
         "-t", threshold,
-        "--n_frames", n_frames,
+        # "--n_frames", n_frames,
+        "--csv_path", csv_path,
+        "--flag", flag,
     ]
 
     print("Running:", " ".join(command))
